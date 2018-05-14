@@ -1,0 +1,15 @@
+en:
+  application:
+    access_denied: Access denied
+    invalid_login: Invalid login
+  api:
+    v1:
+      sessions:
+        authorize_error: Authorization failed
+  activerecord:
+      errors:
+        models:
+          user:
+            attributes:
+              login:
+                wrong_format: "Please, use correct login format: phone"

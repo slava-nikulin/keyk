@@ -1,0 +1,26 @@
+en:
+  application:
+    access_denied: Access denied
+    invalid_login: "Please, use correct login format: phone or email"
+    authorize_error: Authorization failed
+    invalid_params: Parameters are invalid
+    record_not_found: Record not found
+    service:
+      template:
+        invalid_config: Template's config is invalid
+  api:
+    v1:
+      accounts:
+        destroyed: Account was destroyed
+      templates:
+        destroyed: Template was destroyed
+
+  activerecord:
+      errors:
+        models:
+          user:
+            attributes:
+              phone:
+                wrong_format: Please, use correct phone format
+              email:
+                wrong_format: Please, use correct email format
