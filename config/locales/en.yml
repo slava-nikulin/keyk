@@ -24,3 +24,7 @@ en:
                 wrong_format: Please, use correct phone format
               email:
                 wrong_format: Please, use correct email format
+          #field:
+            #attributes:
+              #name:
+                #taken:

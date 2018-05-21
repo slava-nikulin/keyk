@@ -22,6 +22,7 @@ RSpec.describe Account, type: :model do
 
   describe 'associations' do
     it { should have_one(:user).dependent(:destroy) }
+    it { should have_many(:tokens).dependent(:destroy) }
   end
 
   describe 'validations' do

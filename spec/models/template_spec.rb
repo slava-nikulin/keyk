@@ -14,20 +14,5 @@ RSpec.describe Template, type: :model do
 
   describe 'association' do
     it { should belong_to(:user) }
-    it { should have_many(:notes).dependent(:destroy) }
-  end
-
-  describe '#create_note' do
-    let(:template) { create :template }
-    let(:note_params) { { title: 'test note', values: { email: 'test@test.com', password: '123123' } } }
-
-    it 'creates note with fields by given params' do
-      expect { template.create_note(note_params) }.to change { Note.count }.by(1)
-      note = Note.last
-      expect(note.fields.count).to eq 2
-      password_field = note.fields.last
-      expect(password_field.input_type).to eq 'password'
-      expect(password_field.value).to eq '123123'
-    end
   end
 end

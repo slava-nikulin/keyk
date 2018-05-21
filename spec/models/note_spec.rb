@@ -11,7 +11,6 @@ RSpec.describe Note, type: :model do
   describe 'association' do
     it { should have_many(:fields).dependent(:destroy).autosave(true) }
     it { should belong_to(:user) }
-    it { should belong_to(:template) }
     it { should have_and_belong_to_many(:groups) }
   end
 end

@@ -1,7 +1,6 @@
 # Model describes note's template, that is used as sceleton to create security notes
 class Template < ApplicationRecord
   belongs_to :user
-  has_many :notes, dependent: :destroy
 
   validates_presence_of :title, :config
   validates_uniqueness_of :title
