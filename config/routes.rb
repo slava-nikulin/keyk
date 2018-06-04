@@ -11,6 +11,7 @@ Rails.application.routes.draw do
         end
         resource :account, only: %i(create destroy)
         resources :templates
+        resources :notes
       end
     end
   end

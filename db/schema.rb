@@ -72,11 +72,10 @@ ActiveRecord::Schema.define(version: 2018_05_08_134054) do
 
   create_table "notes", force: :cascade do |t|
     t.string "title", comment: "Note's title"
-    t.bigint "template_id"
+    t.integer "order", default: 0, comment: "Note's order"
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["template_id"], name: "index_notes_on_template_id"
     t.index ["user_id"], name: "index_notes_on_user_id"
   end
 

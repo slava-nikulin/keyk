@@ -1,9 +1,12 @@
 FactoryBot.define do
   factory :field do
-    input_type { 0 }
+    input_type { Field.input_types.values.sample }
     title { 'Login' }
     name { Faker::Hacker.noun }
-    order { 1 }
+    sequence :order do |n|
+      n
+    end
+    value { Faker::Cannabis.terpene }
 
     association :note, factory: :note
   end
