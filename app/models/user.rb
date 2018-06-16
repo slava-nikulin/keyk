@@ -17,12 +17,39 @@ class User < ApplicationRecord
   has_many :groups, through: :membership_in_groups
 
   before_save :update_login
+  before_destroy :delete_owned_groups, prepend: true
 
   def login=(str)
     assign_attributes(Account.login_key(str) => str)
   end
 
+  def notes
+    Note.where(user_id: id) + (groups.eager_load(:notes).map(&:notes).first || []) # returns collection_proxy
+  end
+
+  def owned_groups
+    membership_in_groups.eager_load(:group).where(user_role: :owner).map(&:group)
+  end
+
+  def can_edit_note?(note)
+    note.user_id == id || note.new_record? ||
+      membership_in_groups.
+        eager_load(:group).
+        where(user_role: %i(owner editor)).
+        map(&:group).any? do |group|
+          group.notes.any? { |n| n.id == note.id }
+        end
+  end
+
+  # def note_owner?(note)
+  #   note.groups.empty? || note.groups.any? { |gr| gr.has_owner?(id) }
+  # end
+
   private
+
+  def delete_owned_groups
+    owned_groups.each(&:destroy!)
+  end
 
   def update_login
     account.login = phone || email

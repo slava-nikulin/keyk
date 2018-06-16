@@ -38,7 +38,8 @@ module Api
       end
 
       def find_note
-        @note = current_user.notes.find(params[:id])
+        @note = current_user.notes.detect { |n| n.id == params[:id].to_i }
+        raise ActiveRecord::RecordNotFound if @note.nil?
       end
     end
   end

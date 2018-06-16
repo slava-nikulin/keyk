@@ -5,6 +5,7 @@ class BaseService
 
   def initialize(_)
     @errors = ActiveModel::Errors.new(self)
+    @result = {}
   end
 
   def valid?

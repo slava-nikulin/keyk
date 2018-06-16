@@ -5,6 +5,7 @@ en:
     authorize_error: Authorization failed
     invalid_params: Parameters are invalid
     record_not_found: Record not found
+    unauthorized_operation: Operation is unauthorized
     service:
       template:
         invalid_config: Template's config is invalid

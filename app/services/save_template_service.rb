@@ -7,7 +7,6 @@ class SaveTemplateService < BaseService
   def initialize(user:, params:, template_id: nil)
     @template_params = params&.with_indifferent_access&.merge(user: user)
     @template_id = template_id
-    @result = {}
     super
   end
 

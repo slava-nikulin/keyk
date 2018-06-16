@@ -5,7 +5,6 @@
 class RegisterUserService < BaseService
   def initialize(params = {})
     @registration_params = params
-    @result = {}
     super
   end
 

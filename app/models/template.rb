@@ -5,6 +5,7 @@ class Template < ApplicationRecord
   validates_presence_of :title, :config
   validates_uniqueness_of :title
 
+  # DEPRECATED
   # Public: creates note and fills fields values from "values" hash
   def create_note(title:, user: self.user, values: {})
     values = values.with_indifferent_access

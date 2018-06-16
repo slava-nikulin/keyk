@@ -5,7 +5,6 @@
 class SessionsService < BaseService
   def initialize(params = {})
     @session_params = params
-    @result = {}
     super
   end
 
