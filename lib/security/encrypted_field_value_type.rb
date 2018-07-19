@@ -14,7 +14,7 @@ module Security
     def cypher
       salt = Rails.application.credentials.dig(:security, :salt)
       key = ActiveSupport::KeyGenerator.new(Rails.application.credentials.dig(:security, :secret_key)).
-        generate_key(salt, Rails.application.credentials.dig(:security, :key_size))
+              generate_key(salt, Rails.application.credentials.dig(:security, :key_size))
       ActiveSupport::MessageEncryptor.new(key)
     end
   end

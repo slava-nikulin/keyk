@@ -6,6 +6,15 @@ class Group < ApplicationRecord
   has_many :users, through: :group_relationships
 
   def has_owner?(user_id)
-    group_relationships.where(user_role: :owner, user_id: user_id).count.nonzero?
+    !!owners.select { |usr| usr.id == user_id }.count.nonzero?
+  end
+
+  # Can this be made prettier? Too much metaprogramming?
+  GroupRelationship.user_roles.keys.each do |role|
+    define_method("#{role}s") do
+      #  instance_variable_get("@#{role}s") ||
+      #    instance_variable_set("@#{role}s", group_relationships.eager_load(:user).where(user_role: role).map(&:user))
+      group_relationships.eager_load(:user).where(user_role: role).map(&:user)
+    end
   end
 end
