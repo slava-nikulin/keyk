@@ -15,6 +15,8 @@ en:
         destroyed: Account was destroyed
       templates:
         destroyed: Template was destroyed
+      groups:
+        destroyed: Group was destroyed
 
   activerecord:
       errors:
@@ -25,6 +27,11 @@ en:
                 wrong_format: Please, use correct phone format
               email:
                 wrong_format: Please, use correct email format
+          group_relationship:
+            attributes:
+              group:
+                must_have_owner: Group must have at least one owner
+
           #field:
             #attributes:
               #name:

@@ -1,4 +1,4 @@
-# Creates or updates template
+# Creates or updates note
 # params - Hash, required. Params to create note
 
 class SaveNoteService < BaseService

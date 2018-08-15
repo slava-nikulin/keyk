@@ -21,7 +21,7 @@ RSpec.describe 'Templates API', type: :request do
           as: :json
     end
 
-    it 'returns templates list' do
+    it 'returns template in json format' do
       res = JSON.parse(response.body)
       expect(res['template']['id']).to eq template1.id
       expect(res['template']['config']['fields']).

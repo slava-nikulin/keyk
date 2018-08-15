@@ -18,8 +18,8 @@ class SaveGroupService < BaseService
   def initialize(owner:, group_params: {}, members_params: {}, group_id: nil)
     @owner = owner
     @group_id = group_id
-    @group_params = group_params&.with_indifferent_access
-    @members_params = members_params
+    @group_params = group_params&.deep_symbolize_keys
+    @members_params = members_params&.deep_symbolize_keys
     super
   end
 
@@ -53,8 +53,10 @@ class SaveGroupService < BaseService
 
       if usr[:_destroy]
         group.group_relationships.find_by(user_id: db_user.id)&.delete
-      elsif group.group_relationships.where(user_id: db_user.id).blank?
-        group.group_relationships.create!(user_id: db_user.id, user_role: usr[:role])
+      elsif (gr_rel = group.group_relationships.find_by(user_id: db_user.id)).blank?
+        group.group_relationships.create!(user_id: db_user.id, user_role: usr.fetch(:user_role, :guest))
+      elsif gr_rel.present?
+        gr_rel.update_attributes!(user_role: usr.fetch(:user_role, gr_rel.user_role))
       end
     end
   end

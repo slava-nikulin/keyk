@@ -41,10 +41,6 @@ class User < ApplicationRecord
         end
   end
 
-  # def note_owner?(note)
-  #   note.groups.empty? || note.groups.any? { |gr| gr.has_owner?(id) }
-  # end
-
   private
 
   def delete_owned_groups

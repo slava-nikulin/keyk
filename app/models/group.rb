@@ -9,12 +9,14 @@ class Group < ApplicationRecord
     !!owners.select { |usr| usr.id == user_id }.count.nonzero?
   end
 
-  # Can this be made prettier? Too much metaprogramming?
+  def destroy!
+    group_relationships.delete_all
+    super
+  end
+
   GroupRelationship.user_roles.keys.each do |role|
     define_method("#{role}s") do
-      #  instance_variable_get("@#{role}s") ||
-      #    instance_variable_set("@#{role}s", group_relationships.eager_load(:user).where(user_role: role).map(&:user))
-      group_relationships.eager_load(:user).where(user_role: role).map(&:user)
+      group_relationships.eager_load(user: :account).where(user_role: role).map(&:user)
     end
   end
 end

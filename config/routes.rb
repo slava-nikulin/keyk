@@ -12,6 +12,7 @@ Rails.application.routes.draw do
         resource :account, only: %i(create destroy)
         resources :templates
         resources :notes
+        resources :groups
       end
     end
   end
