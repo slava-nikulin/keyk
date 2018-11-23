@@ -57,6 +57,7 @@ GEM
     builder (3.2.3)
     byebug (10.0.2)
     concurrent-ruby (1.0.5)
+    connection_pool (2.2.2)
     crass (1.0.4)
     diff-lcs (1.3)
     erubi (1.7.1)
@@ -77,6 +78,12 @@ GEM
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
+    lograge (0.10.0)
+      actionpack (>= 4)
+      activesupport (>= 4)
+      railties (>= 4)
+      request_store (~> 1.0)
+    logstash-event (1.2.02)
     loofah (2.2.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -97,6 +104,8 @@ GEM
     pg (1.0.0)
     puma (3.11.4)
     rack (2.0.4)
+    rack-protection (2.0.4)
+      rack
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
     rails (5.2.0)
@@ -127,6 +136,9 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
+    redis (4.0.3)
+    request_store (1.4.1)
+      rack (>= 1.4)
     rspec-core (3.7.1)
       rspec-support (~> 3.7.0)
     rspec-expectations (3.7.0)
@@ -147,6 +159,10 @@ GEM
     ruby_dep (1.5.0)
     shoulda-matchers (3.1.2)
       activesupport (>= 4.0.0)
+    sidekiq (5.2.3)
+      connection_pool (~> 2.2, >= 2.2.2)
+      rack-protection (>= 1.5.0)
+      redis (>= 3.3.5, < 5)
     sprockets (3.7.1)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -173,14 +189,18 @@ DEPENDENCIES
   faker!
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
+  lograge
+  logstash-event
   pg (>= 0.18, < 2.0)
   puma (~> 3.11)
   rails (~> 5.2.0)
+  redis
   rspec-rails
   shoulda-matchers
+  sidekiq
 
 RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.16.2
+   1.16.6

@@ -56,6 +56,9 @@ Rails.application.configure do
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
 
+  config.lograge.enabled = true
+  config.lograge.formatter = Lograge::Formatters::Logstash.new
+
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
@@ -66,9 +69,24 @@ Rails.application.configure do
   if ENV["RAILS_LOG_TO_STDOUT"].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
+    config.log_tags  = [:subdomain, :uuid]
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  config.eager_load_paths += %W(#{Rails.root}/app/models/tokens)
+
+  config.active_job.queue_adapter = :sidekiq
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.default_url_options = { host: 'yapm.ru' }
+  config.action_mailer.smtp_settings = {
+    address:              Rails.application.credentials.dig(:security, :smtp_domain),
+    domain:               'yapm.ru',
+    user_name:            Rails.application.credentials.dig(:security, :smtp_user_name),
+    password:             Rails.application.credentials.dig(:security, :smtp_password),
+    authentication:       'plain',
+    enable_starttls_auto: true
+  }
 end

@@ -1,0 +1,147 @@
+version: "3"
+services:
+  web:
+    image: nikulinv/yapm:latest
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    ports:
+      - "3000:3000"
+    command: ["./wait-for-postgres.sh", "db", "bundle exec rails s -p 3000 -b 0.0.0.0"]
+    networks:
+      - backend
+    env_file:
+      - ./docker_prod.env
+    # logging:
+    #   driver: gelp
+    #   options:
+    #     gelf-address: udp://localhost:12201 # TODO: determine logstash container's host ip
+
+  db:
+    image: 'postgres:10.5-alpine'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - backend
+    env_file:
+      - ./docker_prod.env
+  nginx:
+    image: nikulinv/yapm-nginx:latest
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+    command: /bin/sh -c "nginx -g 'daemon off;'"
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - backend
+  redis:
+    image: redis:latest
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - backend
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+  sidekiq:
+    image: nikulinv/yapm:latest
+    command: sidekiq -C config/sidekiq.yml
+    networks:
+      - backend
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+
+  # this is ELK stack. TODO: research martians's Prometheus, Yabeda(?)
+  # docker-machine ssh yapmmachine1 'sysctl -w vm.max_map_count=262144'
+  # elasticsearch:
+  #   command: elasticsearch -Enetwork.host=0.0.0.0 -Ediscovery.zen.ping.unicast.hosts=elasticsearch
+  #   environment:
+  #     ES_JAVA_OPTS: '-Xms256m -Xmx256m'
+  #     xpack.security.enabled: 'false'
+  #     xpack.monitoring.enabled: 'false'
+  #     xpack.graph.enabled: 'false'
+  #     xpack.watcher.enabled: 'false'
+  #     LOGSPOUT: ignore
+  #   image: elasticsearch:6.4.2
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
+  #   volumes:
+  #     - /usr/share/elasticsearch/data
+  #   networks:
+  #     - elk
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 1
+  # #    endpoint_mode: dnsrr
+  # kibana:
+  #   image: kibana:6.4.2
+  #   ports:
+  #     - "5601:5601"
+  #   environment:
+  #     ELASTICSEARCH_URL: http://elasticsearch:9200
+  #     LOGSPOUT: ignore
+  #     XPACK_SECURITY_ENABLED: 'false'
+  #     XPACK_MONITORING_ENABLED: 'false'
+  #   networks:
+  #     - elk
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 1
+  #
+  # logstash:
+  #   hostname: logstash
+  #   command: sh -c "logstash -e 'input { syslog  { type => syslog port => 10514   } gelf { } } output { stdout { codec => rubydebug } elasticsearch { hosts => [ \"elasticsearch\" ] } }'"
+  #   image: logstash:latest
+  #   networks:
+  #     - elk
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 1
+  #   environment:
+  #     LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+  #     LOGSPOUT: ignore
+  # logspout:
+  #   image: bekt/logspout-logstash
+  #   environment:
+  #     ROUTE_URIS: 'logstash://logstash:5000'
+  #     LOGSPOUT: ignore
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   depends_on:
+  #     - logstash
+  #   deploy:
+  #     mode: global
+  #     restart_policy:
+  #       condition: on-failure
+  #       delay: 30s
+  #   networks:
+  #     - elk
+
+networks:
+  backend:
+  elk:
+volumes:
+  pgdata:
+  redis-data:

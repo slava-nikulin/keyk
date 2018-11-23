@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+  db:
+    image: 'postgres:10.5-alpine'
+    volumes:
+      - /tmp/yapm/db:/var/lib/postgresql/data
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        UID: ${MY_UID}
+        GID: ${MY_GID}
+    command: bundle exec rails s
+    volumes:
+      - .:/app
+      - bundle_cache:/bundle
+    ports:
+      - "3000:3000"
+    depends_on:
+     - db
+volumes:
+  bundle_cache:

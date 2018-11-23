@@ -1,0 +1,12 @@
+.git
+.gitignore
+config/master.key
+.dockerignore
+.byebug_history
+log/*
+tmp/*
+.env
+.env.sample
+*.md
+docker-compose.yml
+production_stack.yml

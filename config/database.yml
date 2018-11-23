@@ -1,0 +1,22 @@
+# configured for docker by default
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: db
+  username: postgres
+  password:
+  pool: 5
+
+development:
+  <<: *default
+  database: yapm_dev
+
+test:
+  <<: *default
+  database: yapm_test
+
+production:
+  <<: *default
+  database: yapm_prod
+  username: <%= ENV['POSTGRES_USER'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>

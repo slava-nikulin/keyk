@@ -6,6 +6,8 @@ en:
     invalid_params: Parameters are invalid
     record_not_found: Record not found
     unauthorized_operation: Operation is unauthorized
+    duplicate_login: Login has been already taken
+    confirmation_failed: Could not confirm account
     service:
       template:
         invalid_config: Template's config is invalid

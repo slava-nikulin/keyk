@@ -1,0 +1,27 @@
+FROM ruby:2.5.1-slim
+
+RUN apt update && apt install build-essential libpq-dev nodejs postgresql postgresql-contrib git tzdata vim -y
+
+ARG UNAME=me
+ARG UID
+ARG GID
+RUN groupadd -g $GID -o $UNAME
+RUN useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
+
+RUN mkdir -p /app /bundle /bundle/bin
+RUN chown $UNAME /app
+RUN chown $UNAME /bundle
+RUN chown $UNAME /bundle/bin
+
+WORKDIR /app
+
+COPY . .
+
+COPY dev-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/dev-entrypoint.sh
+ENTRYPOINT ["dev-entrypoint.sh"]
+
+#RUN chmod +x wait-for-postgres.sh
+USER $UNAME
+
+CMD puma -C config/puma.rb
