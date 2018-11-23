@@ -1,5 +1,5 @@
 RSpec.describe 'Groups API', type: :request do
-  let(:group_owner) { create :user }
+  let(:group_owner) { create :user, account: create(:account, :confirmed) }
   let(:user1) { create :user }
   let(:user2) { create :user }
   let(:user3) { create :user }
@@ -25,7 +25,7 @@ RSpec.describe 'Groups API', type: :request do
 
   describe 'GET api/v1/groups' do
     before do
-      get '/api/v1/groups', headers: auth_header(group_owner.account.tokens.last), as: :json
+      get '/api/v1/groups', headers: auth_header(group_owner.account.auth_tokens.last), as: :json
     end
 
     it 'returns templates list' do
@@ -36,7 +36,7 @@ RSpec.describe 'Groups API', type: :request do
 
   describe 'GET api/v1/groups/:id' do
     before do
-      get "/api/v1/groups/#{group.id}", headers: auth_header(group_owner.account.tokens.last), as: :json
+      get "/api/v1/groups/#{group.id}", headers: auth_header(group_owner.account.auth_tokens.last), as: :json
     end
 
     it 'returns group in json format' do
@@ -52,7 +52,7 @@ RSpec.describe 'Groups API', type: :request do
     before do
       post '/api/v1/groups/',
           params: { group: valid_params },
-          headers: auth_header(group_owner.account.tokens.last),
+          headers: auth_header(group_owner.account.auth_tokens.last),
           as: :json
     end
 
@@ -84,7 +84,7 @@ RSpec.describe 'Groups API', type: :request do
       before do
         patch "/api/v1/groups/#{group.id}",
           params: { group: group_params },
-          headers: auth_header(group_owner.account.tokens.last),
+          headers: auth_header(group_owner.account.auth_tokens.last),
           as: :json
       end
 
@@ -101,7 +101,7 @@ RSpec.describe 'Groups API', type: :request do
       before do
         patch "/api/v1/groups/#{group.id + 100}",
           params: { group: group_params },
-          headers: auth_header(group_owner.account.tokens.last),
+          headers: auth_header(group_owner.account.auth_tokens.last),
           as: :json
       end
 

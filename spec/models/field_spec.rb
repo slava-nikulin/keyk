@@ -38,7 +38,7 @@ RSpec.describe Field, type: :model do
 
     context 'when field is saved in db' do
       it 'model returns decrypted value, but db stores encrypted one' do
-        expect(field.value).to eq('test')
+        expect(field.reload.value).to eq('test')
         encrypted_value = ActiveRecord::Base.connection.execute('select value from fields limit 1').to_a.first['value']
         expect(encrypted_value).not_to eq('test')
       end

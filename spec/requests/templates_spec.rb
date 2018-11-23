@@ -1,11 +1,11 @@
 RSpec.describe 'Templates API', type: :request do
-  let(:account) { create :account, :with_user }
+  let(:account) { create :account, :with_user, :confirmed }
   let!(:template1) { create :template, user: account.user }
   let!(:template2) { create :template, user: account.user }
 
   describe 'GET api/v1/templates' do
     before do
-      get '/api/v1/templates', headers: { 'Authorization' => "Token token=#{account.tokens.last.value}" }, as: :json
+      get '/api/v1/templates', headers: { 'Authorization' => "Token token=#{account.auth_tokens.last.value}" }, as: :json
     end
 
     it 'returns templates list' do
@@ -17,7 +17,7 @@ RSpec.describe 'Templates API', type: :request do
   describe 'GET api/v1/templates/:show' do
     before do
       get "/api/v1/templates/#{template1.id}",
-          headers: { 'Authorization' => "Token token=#{account.tokens.last.value}" },
+          headers: { 'Authorization' => "Token token=#{account.auth_tokens.last.value}" },
           as: :json
     end
 
@@ -42,7 +42,7 @@ RSpec.describe 'Templates API', type: :request do
     before do
       post '/api/v1/templates/',
           params: { template: template_params },
-          headers: { 'Authorization' => "Token token=#{account.tokens.last.value}" },
+          headers: { 'Authorization' => "Token token=#{account.auth_tokens.last.value}" },
           as: :json
     end
 
@@ -65,7 +65,7 @@ RSpec.describe 'Templates API', type: :request do
       before do
         patch "/api/v1/templates/#{template1.id}",
           params: { template: template_params },
-          headers: { 'Authorization' => "Token token=#{account.tokens.last.value}" },
+          headers: { 'Authorization' => "Token token=#{account.auth_tokens.last.value}" },
           as: :json
       end
 
@@ -79,7 +79,7 @@ RSpec.describe 'Templates API', type: :request do
       before do
         patch "/api/v1/templates/#{template1.id + 100}",
           params: { template: template_params },
-          headers: { 'Authorization' => "Token token=#{account.tokens.last.value}" },
+          headers: { 'Authorization' => "Token token=#{account.auth_tokens.last.value}" },
           as: :json
       end
 

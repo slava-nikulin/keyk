@@ -1,6 +1,11 @@
 module Security
-  # Encryption/Decription of value attribute for Field model
+  # Encryption/Decription of 'value' attribute for Field model
+  # NOTE: currently note in use
   class EncryptedFieldValueType < ActiveRecord::Type::Value
+    def initialize(salt)
+      @salt = salt
+    end
+
     def serialize(value)
       cypher.encrypt_and_sign(value) if value.present?
     end
@@ -12,9 +17,8 @@ module Security
     private
 
     def cypher
-      salt = Rails.application.credentials.dig(:security, :salt)
       key = ActiveSupport::KeyGenerator.new(Rails.application.credentials.dig(:security, :secret_key)).
-              generate_key(salt, Rails.application.credentials.dig(:security, :key_size))
+                                        generate_key(@salt, ActiveSupport::MessageEncryptor.key_len)
       ActiveSupport::MessageEncryptor.new(key)
     end
   end

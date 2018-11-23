@@ -1,8 +1,8 @@
 RSpec.describe 'Notes API', type: :request do
-  let(:user) { create :user }
+  let(:user) { create :user, account: create(:account, :confirmed) }
   let!(:note1) { create :note, user: user }
   let!(:note2) { create :note, :with_fields, user: user }
-  let(:headers) { { 'Authorization' => "Token token=#{user.account.tokens.last.value}" } }
+  let(:headers) { { 'Authorization' => "Token token=#{user.account.auth_tokens.last.value}" } }
 
   describe 'GET api/v1/notes' do
     before do
