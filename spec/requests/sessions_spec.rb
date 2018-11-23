@@ -9,7 +9,7 @@ RSpec.describe 'Authentication API', type: :request do
 
       it 'returns token' do
         resp = JSON.parse(response.body)
-        expect(account.tokens.last.value).to eq resp['token']
+        expect(account.auth_tokens.last.value).to eq resp['token']
       end
     end
 
@@ -19,7 +19,7 @@ RSpec.describe 'Authentication API', type: :request do
 
       it 'returns token' do
         resp = JSON.parse(response.body)
-        expect(account.tokens.last.value).to eq resp['token']
+        expect(account.auth_tokens.last.value).to eq resp['token']
       end
     end
 
@@ -45,12 +45,12 @@ RSpec.describe 'Authentication API', type: :request do
   end
 
   describe 'sign_out' do
-    let!(:account) { create :account, :with_user, login: '79889966886', password: 'password' }
+    let!(:account) { create :account, :with_user, :confirmed, login: '79889966886', password: 'password' }
 
     context 'when token is valid' do
       it 'clears auth_token' do
         expect do
-          delete '/api/v1/sessions/sign_out', headers: { 'Authorization' => "Token token=#{account.tokens.last.value}" }
+          delete '/api/v1/sessions/sign_out', headers: { 'Authorization' => "Token token=#{account.auth_tokens.last.value}" }
         end.to change { Token.count }.by(-1)
 
         expect(response).to have_http_status(200)

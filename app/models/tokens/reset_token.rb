@@ -1,0 +1,2 @@
+class ResetToken < Token
+end

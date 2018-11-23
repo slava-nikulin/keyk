@@ -18,19 +18,11 @@ ActiveRecord::Schema.define(version: 2018_05_08_134054) do
   create_table "accounts", force: :cascade do |t|
     t.string "login"
     t.string "password_digest", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_token_created_at"
-    t.string "confirmation_token"
     t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
     t.integer "failed_attempts", default: 0, null: false
-    t.string "unlock_token"
-    t.datetime "locked_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["confirmation_token"], name: "index_accounts_on_confirmation_token"
     t.index ["login"], name: "index_accounts_on_login"
-    t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token"
   end
 
   create_table "fields", force: :cascade do |t|
@@ -39,6 +31,7 @@ ActiveRecord::Schema.define(version: 2018_05_08_134054) do
     t.string "name", comment: "Field's name"
     t.integer "order", default: 0, comment: "Field's order"
     t.string "value", comment: "Encrypted field's value"
+    t.string "enc_salt", comment: "Master password salt"
     t.bigint "note_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -90,6 +83,7 @@ ActiveRecord::Schema.define(version: 2018_05_08_134054) do
 
   create_table "tokens", force: :cascade do |t|
     t.string "value"
+    t.string "type"
     t.bigint "account_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

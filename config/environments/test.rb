@@ -36,6 +36,10 @@ Rails.application.configure do
 
   ActiveRecord::Base.logger = Logger.new(STDOUT) if ENV['SHOW_LOG'].present?
 
+  config.action_mailer.delivery_method = :test
+  config.action_mailer.default_url_options = { host: 'test.yapm.ru' }
+  config.active_job.queue_adapter = :test
+
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 end

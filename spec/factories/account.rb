@@ -4,24 +4,25 @@ FactoryBot.define do
     password { 'password' }
 
     after(:create) do |acc|
-      acc.tokens.create!
+      acc.auth_tokens.create!
+    end
+
+    trait :confirmed do
+      after(:create) do |acc, _|
+        acc.update_attributes!(confirmed_at: Time.zone.now)
+      end
     end
 
     trait :with_reset do
-      reset_password_token { SecureRandom.hex(32) }
-      reset_password_token_created_at { Time.now }
+      after(:create) do |acc, _|
+        acc.reset_token = Token.create!
+      end
     end
 
     trait :with_confirmation do
-      confirmation_token { SecureRandom.hex(32) }
-      confirmed_at { Time.now }
-      confirmation_sent_at { Time.now }
-    end
-
-    trait :with_unclock_data do
-      failed_attempts { 10 }
-      unlock_token { SecureRandom.hex(32) }
-      confirmation_sent_at { Time.now }
+      after(:create) do |acc, _|
+        acc.confirm_token = Token.create!
+      end
     end
 
     trait :with_user do

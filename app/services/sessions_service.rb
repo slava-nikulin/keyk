@@ -11,7 +11,7 @@ class SessionsService < BaseService
   def call
     begin
       if acc = Account.valid_login?(@session_params[:login], @session_params[:password])
-        result[:token] = acc.tokens.create.value
+        result[:token] = acc.auth_tokens.last&.value || acc.auth_tokens.create.value
       else
         errors.add(:base, :authorize_error, message: I18n.t('application.authorize_error'))
       end

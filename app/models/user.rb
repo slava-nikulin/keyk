@@ -13,7 +13,7 @@ class User < ApplicationRecord
   belongs_to :account
   has_many :templates, dependent: :destroy
   has_many :notes, dependent: :destroy
-  has_many :membership_in_groups, foreign_key: 'user_id', class_name: 'GroupRelationship', dependent: :destroy
+  has_many :membership_in_groups, foreign_key: 'user_id', class_name: 'GroupRelationship', dependent: :destroy, inverse_of: :user
   has_many :groups, through: :membership_in_groups
 
   before_save :update_login

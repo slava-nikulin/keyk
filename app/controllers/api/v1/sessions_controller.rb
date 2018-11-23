@@ -12,6 +12,7 @@ module Api
         end
       end
 
+      # TODO: destroy(?)
       def sign_out
         current_account.sign_out(Current.token.value)
         head :ok

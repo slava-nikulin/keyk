@@ -9,7 +9,11 @@ Rails.application.routes.draw do
             delete :sign_out
           end
         end
-        resource :account, only: %i(create destroy)
+        resource :account, only: %i(create destroy) do
+          member do
+            get :confirm
+          end
+        end
         resources :templates
         resources :notes
         resources :groups

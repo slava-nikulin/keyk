@@ -1,15 +1,21 @@
 RSpec.describe 'Accounts API', type: :request do
+  include ActiveJob::TestHelper
+
   describe 'registration' do
-    let(:correct_auth_data) { { account: { login: '79889966886', password: 'password' } } }
+    let(:correct_auth_data) { { account: { login: 'test@test.email', password: 'password' } } }
     let(:incorrect_data) { { account: { login: 'somelogin', password: 'password' } } }
 
     context 'when register data is valid' do
-      before { post '/api/v1/account', params: correct_auth_data, as: :json }
-
       it 'returns account in json format' do
+        expect { post('/api/v1/account', params: correct_auth_data, as: :json) }
+          .to have_enqueued_job.on_queue('mailers')
+          .and change { Account.count }.by(1)
         resp = JSON.parse(response.body)
         expect(resp['account']).to be_present
-        expect(resp['account']['login']).to eq '79889966886'
+        expect(resp['account']['login']).to eq 'test@test.email'
+        expect(resp['account']['confirm_type']).to eq 'email'
+        expect { perform_enqueued_jobs { UserMailer.with(account_id: Account.last.id).confirm_email.deliver_later } }
+          .to change { ActionMailer::Base.deliveries.size }.by(1)
         expect(response).to have_http_status(200)
       end
     end
@@ -36,9 +42,9 @@ RSpec.describe 'Accounts API', type: :request do
   end
 
   describe 'deletion' do
-    let!(:account) { create :account, :with_user }
+    let!(:account) { create :account, :with_user, :confirmed }
     let(:delete_acc) do
-      delete '/api/v1/account', headers: { 'Authorization' => "Token token=#{account.tokens.last.value}" }
+      delete '/api/v1/account', headers: { 'Authorization' => "Token token=#{account.auth_tokens.last.value}" }
     end
 
     context 'when operation successful' do

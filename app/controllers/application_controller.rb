@@ -2,6 +2,7 @@ class ApplicationController < ActionController::API
   include ActionController::HttpAuthentication::Token::ControllerMethods
 
   before_action :require_login
+  skip_before_action :require_login, if: proc { action_name == "index" && request.path_info == root_path } # see https://github.com/rails/rails/issues/9703
 
   rescue_from ActiveRecord::RecordNotFound do |_|
     render_errors(I18n.t('application.record_not_found'), 404)
@@ -29,7 +30,7 @@ class ApplicationController < ActionController::API
   def authenticate_by_token
     authenticate_with_http_token do |token, _opts|
       if (acc = Account.with_unexpired_token(token, 1.day.ago)).present?
-        Current.token = acc.tokens.find_by(value: token)
+        Current.token = acc.auth_tokens.find_by(value: token)
 
         ActiveSupport::SecurityUtils.secure_compare(
           ::Digest::SHA256.hexdigest(token),

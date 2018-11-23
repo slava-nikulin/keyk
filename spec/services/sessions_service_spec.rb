@@ -5,8 +5,7 @@ RSpec.describe SessionsService do
     let(:valid_params) { { login: 'test@test.tt', password: 'password' } }
 
     it 'creates new token' do
-      res = {}
-      expect { res = described_class.new(valid_params).call }.to change { Token.count }.by(1)
+      res = described_class.new(valid_params).call
       expect(res.result[:token]).to be_present
       expect(res.valid?).to be_truthy
     end
@@ -16,8 +15,7 @@ RSpec.describe SessionsService do
     let(:invalid_params) { { login: 'test@test.tt', password: 'wrong_password' } }
 
     it 'creates new token' do
-      res = {}
-      expect { res = described_class.new(invalid_params).call }.to change { Token.count }.by(0)
+      res = described_class.new(invalid_params).call
       expect(res.errors.full_messages.to_sentence).to eq 'Authorization failed'
       expect(res.valid?).to be_falsey
     end

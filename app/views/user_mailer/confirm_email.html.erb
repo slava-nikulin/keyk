@@ -1,0 +1,9 @@
+<h1>Welcome to yapm.ru, <%= @account.login %></h1>
+<p>
+  You have successfully signed up to <em>yapm.ru</em>,
+</p>
+<p>
+  <!-- TODO: change link to client url, add "client type" parameter in register process -->
+  To use the service, please confirm your email by clicking this <%= link_to "link", confirm_api_v1_account_url(token: @account.confirm_token, login: @account.login) %>
+</p>
+<p>Thanks for joining and have a great day!</p>

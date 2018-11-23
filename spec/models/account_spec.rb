@@ -5,24 +5,16 @@ RSpec.describe Account, type: :model do
     it { should have_db_column(:password_digest).of_type(:string) }
     it { should have_db_column(:login).of_type(:string) }
 
-    it { should have_db_column(:reset_password_token).of_type(:string) }
-    it { should have_db_column(:reset_password_token_created_at).of_type(:datetime) }
-
-    it { should have_db_column(:reset_password_token).of_type(:string) }
-    it { should have_db_column(:reset_password_token_created_at).of_type(:datetime) }
-
-    it { should have_db_column(:confirmation_token).of_type(:string) }
     it { should have_db_column(:confirmed_at).of_type(:datetime) }
-    it { should have_db_column(:confirmation_sent_at).of_type(:datetime) }
 
     it { should have_db_column(:failed_attempts).of_type(:integer) }
-    it { should have_db_column(:unlock_token).of_type(:string) }
-    it { should have_db_column(:locked_at).of_type(:datetime) }
   end
 
   describe 'associations' do
     it { should have_one(:user).dependent(:destroy) }
-    it { should have_many(:tokens).dependent(:destroy) }
+    it { should have_many(:auth_tokens).dependent(:destroy) }
+    it { should have_one(:confirm_token).dependent(:destroy) }
+    it { should have_one(:reset_token).dependent(:destroy) }
   end
 
   describe 'validations' do
@@ -32,7 +24,7 @@ RSpec.describe Account, type: :model do
 
   describe '#sign_out' do
     it 'deletes token' do
-      expect { acc.sign_out(acc.tokens.last.value) }.to change { acc.tokens.count }.by(-1)
+      expect { acc.sign_out(acc.auth_tokens.last.value) }.to change { acc.auth_tokens.count }.by(-1)
     end
   end
 
@@ -70,8 +62,8 @@ RSpec.describe Account, type: :model do
     end
 
     describe '#with_unexpired_token' do
-      let!(:account) { create :account }
-      let!(:token) { account.tokens.last }
+      let!(:account) { create :account, :confirmed }
+      let!(:token) { account.auth_tokens.last }
 
       context 'when token is expired' do
         before { token.update_attributes!(updated_at: Time.zone.now - 100.days) }
